@@ -1,0 +1,24 @@
+# Mesh keys and state: never commit
+mesh*.json
+seq.json
+*_seq.txt
+*.share.json
+
+# Reverse-engineering material: never commit
+*.apk
+*.xapk
+*.dex
+dec/
+jadx/
+*.bundle
+*.hbc
+*.snoop
+hci.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/

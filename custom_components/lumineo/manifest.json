@@ -1,0 +1,24 @@
+{
+  "domain": "lumineo",
+  "name": "Lumineo Dancing Lights",
+  "bluetooth": [
+    {
+      "service_uuid": "00001827-0000-1000-8000-00805f9b34fb",
+      "connectable": true
+    }
+  ],
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [
+    "bluetooth"
+  ],
+  "documentation": "https://git.volatilemolotov.com/vdjerek/lumineo-ble-home-assistant",
+  "integration_type": "hub",
+  "iot_class": "assumed_state",
+  "issue_tracker": "https://git.volatilemolotov.com/vdjerek/lumineo-ble-home-assistant/issues",
+  "loggers": [
+    "custom_components.lumineo"
+  ],
+  "requirements": [],
+  "version": "0.1.0"
+}

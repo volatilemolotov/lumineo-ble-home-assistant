@@ -1,0 +1,24 @@
+[project]
+name = "lumineo-ble-home-assistant"
+version = "0.1.0"
+description = "Home Assistant integration for Lumineo Dancing Lights (Bluetooth Mesh)"
+requires-python = ">=3.13"
+license = "MIT"
+
+[dependency-groups]
+dev = ["pytest", "ruff", "cryptography"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 130
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tools/*" = ["E402", "B", "UP", "I"]  # meshlib must be imported first (it sets sys.path)
+"tests/*" = ["E402"]

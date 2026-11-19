@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the manifest version matches the tag
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(jq -r .version custom_components/lumineo/manifest.json)"
+          if [ "$tag" != "$version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match manifest version $version" >&2
+            exit 1
+          fi
+      - name: Build lumineo.zip
+        run: cd custom_components/lumineo && zip -r "$GITHUB_WORKSPACE/lumineo.zip" . -x '__pycache__/*'
+      - name: Attach to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" lumineo.zip --clobber

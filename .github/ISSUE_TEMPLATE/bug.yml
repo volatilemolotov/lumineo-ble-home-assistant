@@ -1,0 +1,55 @@
+name: Bug report
+description: Something doesn't work
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please **don't paste mesh keys or share links** here.
+        The diagnostics download from Home Assistant has the keys removed and is safe to attach.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: input
+    id: light
+    attributes:
+      label: Light model
+      description: Product name or article number from the box or the controller label.
+  - type: dropdown
+    id: setup
+    attributes:
+      label: How are the lights set up?
+      options:
+        - Paired with Home Assistant
+        - Imported from the Lumineo app
+    validations:
+      required: true
+  - type: dropdown
+    id: adapter
+    attributes:
+      label: Bluetooth adapter
+      options:
+        - ESPHome Bluetooth proxy
+        - Local adapter on the Home Assistant host
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Home Assistant and integration version
+      placeholder: "2026.11.2, lumineo 0.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and logs
+      description: |
+        Settings → Devices & services → Lumineo → ⋮ → Download diagnostics, then drag the file here.
+        For logs, enable debug logging on the integration, reproduce, and paste the relevant lines.
+      render: text

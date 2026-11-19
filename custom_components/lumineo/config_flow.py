@@ -15,7 +15,7 @@ from homeassistant.helpers.selector import SelectOptionDict, SelectSelector, Sel
 
 from .const import CONF_MESH, CONF_OWNED, CONF_SHARE, DOMAIN, MESH_PROV_UUID
 from .mesh import k3, key_from_string
-from .pairing import PairingError, async_pair_light, owned_entry
+from .pairing import PairingError, async_pair_light, configured_addresses, owned_entry
 
 _LOGGER = logging.getLogger(__name__)
 CONF_ADDRESS = "address"
@@ -41,11 +41,18 @@ def _is_lumineo_candidate(info: BluetoothServiceInfoBleak) -> bool:
     return MESH_PROV_UUID in info.service_uuids and data[:2] == TELINK_CID
 
 
+def _unique_id(address: str) -> str:
+    return f"unprovisioned-{address.upper()}"
+
+
 def _unprovisioned(hass) -> dict[str, BluetoothServiceInfoBleak]:
+    # HA merges a device's advertisement history, so a light that was unprovisioned once keeps
+    # its 0x1827 service data after pairing. Skip lights that are already in an entry.
+    paired = configured_addresses(hass)
     return {
         info.address: info
         for info in bluetooth.async_discovered_service_info(hass, connectable=True)
-        if _is_lumineo_candidate(info)
+        if _is_lumineo_candidate(info) and info.address.upper() not in paired
     }
 
 
@@ -66,7 +73,9 @@ class LumineoConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_bluetooth(self, discovery_info: BluetoothServiceInfoBleak) -> ConfigFlowResult:
         if not _is_lumineo_candidate(discovery_info):
             return self.async_abort(reason="not_supported")
-        await self.async_set_unique_id(f"unprovisioned-{discovery_info.address}")
+        if discovery_info.address.upper() in configured_addresses(self.hass):
+            return self.async_abort(reason="already_paired")
+        await self.async_set_unique_id(_unique_id(discovery_info.address))
         self._abort_if_unique_id_configured()
         self._address = discovery_info.address
         self.context["title_placeholders"] = {"name": discovery_info.name or discovery_info.address}
@@ -168,8 +177,15 @@ class LumineoConfigFlow(ConfigFlow, domain=DOMAIN):
                 self.hass.config_entries.async_update_entry(other, data={**other.data, CONF_MESH: mesh})
                 await self.hass.config_entries.async_reload(other.entry_id)
 
+    def _abort_stale_discovery(self, mac: str) -> None:
+        """Close the 'Discovered' card for a light that was just paired (e.g. via the menu)."""
+        for flow in self.hass.config_entries.flow.async_progress_by_handler(DOMAIN):
+            if flow["flow_id"] != self.flow_id and flow["context"].get("unique_id") == _unique_id(mac):
+                self.hass.config_entries.flow.async_abort(flow["flow_id"])
+
     async def async_step_pair_done(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         entry, cfg = self._pair_result
+        self._abort_stale_discovery(self._address or "")
         await self._drop_from_other_entries(self._address or "", entry.entry_id if entry else None)
         if entry:
             self.hass.config_entries.async_update_entry(entry, data={**entry.data, CONF_MESH: cfg})

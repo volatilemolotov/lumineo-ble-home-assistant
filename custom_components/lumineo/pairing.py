@@ -27,6 +27,15 @@ def owned_entry(hass: HomeAssistant) -> ConfigEntry | None:
     return next((e for e in hass.config_entries.async_entries(DOMAIN) if e.data.get(CONF_OWNED)), None)
 
 
+def configured_addresses(hass: HomeAssistant) -> set[str]:
+    """MAC addresses of every light in any Lumineo entry (HA's own mesh or an imported app mesh)."""
+    return {
+        node["m"].upper()
+        for entry in hass.config_entries.async_entries(DOMAIN)
+        for node in entry.data.get(CONF_MESH, {}).get("nodes", [])
+    }
+
+
 def new_mesh_config() -> dict:
     # Same shape as the Lumineo app's keys (16 ASCII chars, used as raw bytes).
     return {"meshPwd": secrets.token_hex(8).upper(), "meshName": APP_KEY_DEFAULT, "ivIndex": 0, "nodes": []}

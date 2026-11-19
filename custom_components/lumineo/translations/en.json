@@ -12,17 +12,24 @@
       "share": {
         "title": "Import from the Lumineo app",
         "description": "In the Lumineo app, open the share settings QR code and decode it (any QR scanner). Paste the resulting link (https://stringlight-setting-share...json) here, or paste the JSON file content. The app keeps working alongside Home Assistant.",
-        "data": { "share": "Share link or JSON" }
+        "data": {
+          "share": "Share link or JSON"
+        }
       },
       "pair": {
         "title": "Pair with Home Assistant",
         "description": "Pick an unpaired light. Lights already paired with the Lumineo app don't show up here: press their **Unpair** button in Home Assistant (after importing them), or factory-reset them, first. The light blinks briefly while it pairs.",
-        "data": { "address": "Light", "name": "Name" }
+        "data": {
+          "address": "Light",
+          "name": "Name"
+        }
       },
       "pair_confirm": {
         "title": "Pair with Home Assistant",
         "description": "Pair the unpaired Bluetooth mesh light {address} with Home Assistant? It will no longer work with the Lumineo app.",
-        "data": { "name": "Name" }
+        "data": {
+          "name": "Name"
+        }
       }
     },
     "progress": {
@@ -37,18 +44,25 @@
       "already_configured": "This mesh is already configured (settings were updated).",
       "light_added": "{name} was added to your Home Assistant mesh.",
       "pair_failed": "Pairing failed: {error}",
-      "not_supported": "This Bluetooth mesh device is not a Telink/Lumineo light."
+      "not_supported": "This Bluetooth mesh device is not a Telink/Lumineo light.",
+      "already_paired": "This light is already paired with Home Assistant."
     }
   },
   "entity": {
     "button": {
-      "unpair": { "name": "Unpair (factory reset)" }
+      "unpair": {
+        "name": "Unpair (factory reset)"
+      }
     },
     "number": {
-      "effect_speed": { "name": "Effect speed" }
+      "effect_speed": {
+        "name": "Effect speed"
+      }
     },
     "select": {
-      "effect_palette": { "name": "Effect palette" }
+      "effect_palette": {
+        "name": "Effect palette"
+      }
     }
   }
 }

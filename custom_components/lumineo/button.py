@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 
 from bleak.exc import BleakError
+from homeassistant.components import bluetooth
 from homeassistant.components.button import ButtonEntity
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
@@ -45,3 +46,5 @@ class LumineoUnpair(LumineoEntity, ButtonEntity):
         hass = self.hass
         hass.config_entries.async_update_entry(self._entry, data={**self._entry.data, CONF_MESH: mesh})
         hass.async_create_task(hass.config_entries.async_reload(self._entry.entry_id))
+        # The light now advertises as unprovisioned again: offer it under "Discovered".
+        bluetooth.async_rediscover_address(hass, self._node["m"].upper())

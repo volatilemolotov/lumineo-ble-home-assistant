@@ -43,7 +43,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: LumineoConfigEntry, asyn
     async_add_entities(LumineoLight(entry.runtime_data, node) for node in entry.runtime_data.nodes)
 
 
-def _ha_to_pct(b: int) -> int:
+def _ha_to_index(b: int) -> int:
     return round(BRIGHTNESS_MIN + (BRIGHTNESS_MAX - BRIGHTNESS_MIN) * (max(1, b) - 1) / 254)
 
 
@@ -127,7 +127,7 @@ class LumineoLight(LumineoEntity, LightEntity, RestoreEntity):
             msgs.append(self._scene_msg())
         if ATTR_BRIGHTNESS in kwargs:
             self._attr_brightness = kwargs[ATTR_BRIGHTNESS]
-            msgs.append(vendor_brightness(_ha_to_pct(self._attr_brightness)))
+            msgs.append(vendor_brightness(_ha_to_index(self._attr_brightness)))
         if msgs:
             await self._send(*msgs)
         self._attr_is_on = True

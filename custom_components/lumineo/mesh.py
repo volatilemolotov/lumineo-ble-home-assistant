@@ -291,7 +291,8 @@ def generic_onoff_set(on: bool, ack: bool = True) -> bytes:
 # Reverse-engineered from the Lumineo Dancing Lights app v1.0.52.
 GAMMA = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 13, 13, 14, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 22, 22, 23, 23, 24, 24, 25, 26, 26, 27, 28, 28, 29, 30, 30, 31, 32, 32, 33, 34, 35, 35, 36, 37, 38, 39, 39, 40, 41, 42, 43, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 53, 54, 55, 56, 57, 58, 59, 60, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 73, 74, 75, 76, 77, 78, 80, 81, 82, 83, 85, 86, 87, 88, 90, 91, 92, 94, 95, 96, 98, 99, 100, 102, 103, 105, 106, 108, 109, 111, 112, 114, 115, 117, 118, 120, 121, 123, 124, 126, 127, 129, 131, 132, 134, 136, 137, 139, 141, 142, 144, 146, 148, 149, 151, 153, 155, 156, 158, 160, 162, 164, 166, 167, 169, 171, 173, 175, 177, 179, 181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 205, 207, 210, 212, 214, 216, 218, 220, 223, 225, 227, 229, 232, 234, 236, 239, 241, 243, 246, 248, 250, 253, 255]
 WHITE_BALANCE = (1.0, 0.85, 0.4)
-BRIGHTNESS_MIN, BRIGHTNESS_MAX = 42, 100
+# Brightness is GAMMA[index]. The app's minimum is index 42; index 255 (level 255) is full brightness (verified on a light).
+BRIGHTNESS_MIN, BRIGHTNESS_MAX = 42, 255
 SPEED_MIN, SPEED_MAX, SPEED_DEFAULT = 1, 10, 6
 
 OP_POWER = 0xE0         # power, replies with OP_POWER_STATUS
@@ -316,9 +317,9 @@ def vendor_power_get() -> bytes:
 POWER_STATUS_OP = bytes([OP_POWER_STATUS, 0x11, 0x02])
 
 
-def vendor_brightness(pct: int) -> bytes:
-    pct = max(BRIGHTNESS_MIN, min(BRIGHTNESS_MAX, int(pct)))
-    return _vendor(OP_BRIGHTNESS, bytes([GAMMA[pct]]))
+def vendor_brightness(index: int) -> bytes:
+    index = max(BRIGHTNESS_MIN, min(BRIGHTNESS_MAX, int(index)))
+    return _vendor(OP_BRIGHTNESS, bytes([GAMMA[index]]))
 
 
 def correct_rgb(rgb: tuple[int, int, int], scene: int | None = None) -> tuple[int, int, int]:

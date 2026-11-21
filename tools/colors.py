@@ -54,7 +54,7 @@ async def main():
         await send("static BLUE", vendor_scene(0, 6, [(0, 0, 255)]))
         await send("static WARM WHITE", vendor_scene(0, 6, [(255, 180, 100)]))
         await send("brightness 42 (min)", vendor_brightness(42))
-        await send("brightness 100 (max)", vendor_brightness(100))
+        await send("brightness 255 (max)", vendor_brightness(255))
         await send("effect Fireworks (multi, segmented) RAINBOW", vendor_scene(29, 6, [hex_rgb(h) for h in THEMES["Rainbow"]]), 6)
     finally:
         await c.disconnect()

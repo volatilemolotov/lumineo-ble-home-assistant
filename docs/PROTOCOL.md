@@ -63,7 +63,7 @@ The light is driven by vendor model messages with 3-byte opcodes `<op> 11 02`, s
 | `E0 11 02` | `on` (`00`/`01`) | `E3 11 02 on` | Power |
 | `E1 11 02` | none | `E3 11 02 on` | Power status query |
 | `E6 11 02` | `scene, speed, n, n × (00, r, g, b)` | none | Scene/effect with colours. Scene `00` is a static colour |
-| `F3 11 02` | `level` | none | Brightness, `level = gamma[percent]` with percent 42 to 100 |
+| `F3 11 02` | `level` | none | Brightness 0 to 255, 255 is full. The app sends `gamma[n]` with n from 42 up; the integration maps HA brightness to n = 42…255 |
 | `F0 11 02` | | | "Find my light": flashes for a few seconds |
 
 Important: the light acknowledges **Generic OnOff** (`82 02`/`82 03`), but the LEDs ignore it.

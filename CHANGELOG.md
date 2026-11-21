@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+- 100% brightness is now full brightness. Before, it sent level 27 of 255, so the lights stayed much dimmer than at power-on.
+- Already-paired lights are no longer offered as discovered.
+
 ## 0.1.0 (first public release)
 
 - Pair lights directly with Home Assistant, with Bluetooth discovery. No app needed.

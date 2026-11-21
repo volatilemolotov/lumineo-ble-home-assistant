@@ -105,8 +105,10 @@ def test_vendor_messages():
     assert mesh.vendor_power(True) == H("e0110201")
     assert mesh.vendor_power(False) == H("e0110200")
     assert mesh.vendor_power_get() == H("e11102")
-    assert mesh.vendor_brightness(100) == H("f31102") + bytes([mesh.GAMMA[100]])  # app sends gamma[pct]
-    assert mesh.vendor_brightness(500) == mesh.vendor_brightness(100)  # clamped
+    assert mesh.vendor_brightness(255) == H("f31102ff")  # full brightness
+    assert mesh.vendor_brightness(42) == H("f31102") + bytes([mesh.GAMMA[42]])  # app minimum
+    assert mesh.vendor_brightness(0) == mesh.vendor_brightness(42)  # clamped
+    assert mesh.vendor_brightness(500) == mesh.vendor_brightness(255)  # clamped
     scene = mesh.vendor_scene(mesh.SCENE_STATIC, 5, [(255, 255, 255)])
     assert scene[:6] == H("e61102000501")
     assert scene[6:] == bytes([0, 255, int(255 * 0.85), int(255 * 0.4)])
